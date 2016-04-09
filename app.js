@@ -6,6 +6,8 @@ const ipcMain = require('electron').ipcMain;
 let mainWindow = null;
 let authWindow = null;
 
+const gmailAuthWindow = require('./windows/gmail-auth.js');
+
 app.on('ready', function() {
 	mainWindow = new BrowserWindow({
 		width: 800,
@@ -27,12 +29,11 @@ app.on('ready', function() {
 	});
 
 	authWindow.setMenu(null);
-	authWindow.loadURL('file://' + __dirname + '/windows/auth.html');
 	authWindow.openDevTools();
 
 	ipcMain.on('asynchronous-message', function(event, arg) {
-		if (arg === 'show-auth') {
-			authWindow.show();
+		if (arg === 'show-auth-gmail') {
+			gmailAuthWindow.startWindow(authWindow);
 		}
 	});
 

@@ -9,7 +9,7 @@ let menu = Menu.buildFromTemplate([
 			{
 				label: 'Gmail Account',
 				click: function() {
-					ipcRenderer.send('asynchronous-message','show-auth');
+					ipcRenderer.send('asynchronous-message','show-auth-gmail');
 				}
 			}
 		]
