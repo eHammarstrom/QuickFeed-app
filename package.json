@@ -1,0 +1,14 @@
+{
+  "name": "project-lama-rrisky",
+  "version": "0.0.1",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Emil Hammarström Andersson <emil.a.hammarstrom@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "electron-prebuilt": "^0.37.5",
+    "jquery": "^2.2.3"
+  }
+}
