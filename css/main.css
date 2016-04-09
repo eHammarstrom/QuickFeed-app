@@ -13,6 +13,11 @@ h1 {
 	margin: 0;
 }
 
+.selected {
+	background-color: rgba(0,0,0,0.5) !important;
+}
+
+/* NAVIGATION */
 #navigation {
 	float: left;
 	width: 200px;
@@ -20,11 +25,21 @@ h1 {
 	background-color: rgba(0,255,0,0.5);
 }
 
+/* NAVIGATION > USER */
 #navigation #user {
 	height: 200px;
 	background-color: rgba(255,0,0,0.2);
+	text-align: center;
 }
 
+#navigation #user .circular {
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+	background-image: url('../img/user_test.jpg') no-repeat;
+}
+
+/* NAVIGATION > LIST ITEMS */
 #navigation ul {
 	margin: 0;
 	padding: 0;
@@ -44,6 +59,7 @@ h1 {
 	background-color: rgba(0,0,0,0.2);
 }
 
+/* CONTENT */
 #content {
 	margin-left: 200px;
 	height: 100%;
