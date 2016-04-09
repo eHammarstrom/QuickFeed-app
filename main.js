@@ -2,12 +2,12 @@ const $ = require('jquery');
 
 $('#mail').click(function(e) {
 	e.preventDefault();
-	contentLoadHtml('/views/mail.html', addNavSelected('#mail'));
+	contentLoadHtml('/views/mail/mail.html', addNavSelected('#mail'));
 });
 
 $('#messages').click(function(e) {
 	e.preventDefault();
-	contentLoadHtml('/views/messages.html', addNavSelected('#messages'));
+	contentLoadHtml('/views/messages/messages.html', addNavSelected('#messages'));
 });
 
 /**
