@@ -1,3 +1,24 @@
+const remote = require('electron').remote;
+const Menu = remote.Menu;
+const ipcRenderer = require('electron').ipcRenderer;
+
+let menu = Menu.buildFromTemplate([
+	{
+		label: 'Authentication',
+		submenu: [
+			{
+				label: 'Gmail Account',
+				click: function() {
+					ipcRenderer.send('asynchronous-message','show-auth');
+				}
+			}
+		]
+	}
+]);
+
+Menu.setApplicationMenu(menu);
+
+/* html interaction code */
 const $ = require('jquery');
 
 $('#mail').click(function(e) {
@@ -11,16 +32,16 @@ $('#messages').click(function(e) {
 });
 
 /**
- * Remove existing .selected class and add to specified element
- */
+* Remove existing .selected class and add to specified element
+*/
 function addNavSelected(navButtonClass) {
 	$('#navigation>ul>li.selected').removeClass('selected');
 	$(navButtonClass).addClass('selected');
 }
 
 /**
- * Fill content pane with a html view
- */
+* Fill content pane with a html view
+*/
 function contentLoadHtml(htmlPath, callback) {
 	// fade out content div and empty it.
 	$('#content').fadeOut(500, function() {

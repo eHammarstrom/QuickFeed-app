@@ -1,9 +1,12 @@
-const App = require('app');
-const BrowserWindow = require('browser-window');
+const app = require('electron').app;
+const BrowserWindow = require('electron').BrowserWindow;
+const Menu = require('electron').Menu;
+const ipcMain = require('electron').ipcMain;
 
 let mainWindow = null;
+let authWindow = null;
 
-App.on('ready', function() {
+app.on('ready', function() {
 	mainWindow = new BrowserWindow({
 		width: 800,
 		height: 600,
@@ -11,13 +14,32 @@ App.on('ready', function() {
 		minHeight: 400
 	});
 
-	mainWindow.setMenu(null); // no need for a menu bar atm
+	mainWindow.setMenu(null); // we design and set menu in main.js instead
 	mainWindow.loadURL('file://' + __dirname + '/main.html');
 	mainWindow.openDevTools(); // remove line from production
+
+	authWindow = new BrowserWindow({
+		width: 400,
+		height: 300,
+		minWidth: 400,
+		minHeight: 300,
+		show: false
+	});
+
+	authWindow.setMenu(null);
+	authWindow.loadURL('file://' + __dirname + '/windows/auth.html');
+	authWindow.openDevTools();
+
+	ipcMain.on('asynchronous-message', function(event, arg) {
+		if (arg === 'show-auth') {
+			authWindow.show();
+		}
+	});
 
 	mainWindow.on('closed', function() {
 		// maybe store windows in array later and dereference all on mainWindow close.
 		// depends on if program will become multi-windowed
+		authWindow = null;
 		mainWindow = null;
 	});
 });
