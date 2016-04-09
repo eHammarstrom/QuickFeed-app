@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "author": "Emil Hammarström Andersson <emil.a.hammarstrom@gmail.com>",
+  "author": "Emil Andersson Hammarström <emil.a.hammarstrom@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "electron-prebuilt": "^0.37.5",
