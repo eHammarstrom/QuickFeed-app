@@ -1,12 +1,12 @@
+/*jshint esversion: 6 */
 const app = require('electron').app;
 const BrowserWindow = require('electron').BrowserWindow;
 const Menu = require('electron').Menu;
 const ipcMain = require('electron').ipcMain;
 
-let mainWindow = null;
-let authWindow = null;
+const gmailAuth = require('./windows/gmail-auth.js');
 
-const gmailAuthWindow = require('./windows/gmail-auth.js');
+let mainWindow = null;
 
 app.on('ready', function() {
 	mainWindow = new BrowserWindow({
@@ -20,20 +20,9 @@ app.on('ready', function() {
 	mainWindow.loadURL('file://' + __dirname + '/main.html');
 	mainWindow.openDevTools(); // remove line from production
 
-	authWindow = new BrowserWindow({
-		width: 400,
-		height: 300,
-		minWidth: 400,
-		minHeight: 300,
-		show: false
-	});
-
-	authWindow.setMenu(null);
-	authWindow.openDevTools();
-
 	ipcMain.on('asynchronous-message', function(event, arg) {
 		if (arg === 'show-auth-gmail') {
-			gmailAuthWindow.startWindow(authWindow);
+			gmailAuth.startAuthorization();
 		}
 	});
 

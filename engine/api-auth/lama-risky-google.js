@@ -1,5 +1,4 @@
-'use strict';
-
+/*jshint esversion: 6 */
 const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
@@ -38,6 +37,7 @@ module.exports = {
         });
     },
 
+
     authUrl: function(callback) {
         readSecret(function(secret) {
             let clientSecret = secret.installed.client_secret;
@@ -51,7 +51,7 @@ module.exports = {
                 scope: SCOPES
             });
 
-            callback(url);
+            callback(url, secret);
         });
     }
 
