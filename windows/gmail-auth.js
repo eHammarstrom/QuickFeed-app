@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-const googleAuth = require('../engine/api-auth/lama-risky-google.js');
+const googleAuth = require('../engine/api-auth/google.js');
 const BrowserWindow = require('electron').BrowserWindow;
 
 exports.startAuthorization = function() {
