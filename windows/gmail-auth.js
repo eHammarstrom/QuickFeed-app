@@ -4,28 +4,24 @@ const BrowserWindow = require('electron').BrowserWindow;
 
 exports.startAuthorization = function() {
     let authWindow = new BrowserWindow({
-        width: 400,
-        height: 300,
-        minWidth: 400,
-        minHeight: 300,
-        show: false
+        'use-content-size': true,
+        center: true,
+        show: false,
+        resizeable: false,
+        'always-on-top': true,
+        'standard-window': true,
+        'auto-hide-menu-bar': true
     });
-    authWindow.setMenu(null);
     authWindow.openDevTools();
-    //authWindow.setMaxListeners(50);
 
-    // This is the first state where we load gmail auth page
-    // if done correctly we enter next callback function to catch token post
-    // if done incorrectly we exit out and throw the httpResponseCode *FOR NOW*
-    googleAuth.authUrl(function(url, secret) {
+    googleAuth.requestAuthUrl(function(url) {
         authWindow.loadURL(url);
-
-        console.log(JSON.stringify(secret));
 
         getAuthCode(authWindow).then(function(code) {
             console.log(code);
-            getToken(code, secret).then(function(data) {
-                console.log(data);
+            googleAuth.requestToken(code).then(function(token) {
+                console.log(token);
+                googleAuth.writeToken(token);
             }).catch(function(data) {
                 console.log(data);
             });
@@ -60,45 +56,5 @@ function getAuthCode(authWindow) {
             });
         });
     });
-    return promise;
-}
-
-function getToken(code, secret) {
-    let promise = new Promise(function(resolve, reject) {
-        console.log('doing ajax call');
-        let request = JSON.stringify({
-            'code': code,
-            'client_id': secret.installed.client_id,
-            'client_secret': secret.installed.client_secret,
-            'redirect_uri': secret.installed.redirect_uris[1],
-            'grant_type': 'authorization_code'
-        });
-
-        /*** Here we need to make a http request like the one in ajax below ***/
-        // We will use the node package REQUEST, seems optimal
-
-        /*
-        $.ajax({
-            type: 'POST',
-            url: 'https://accounts.google.com/o/oauth2/token',
-            data: {
-                'code': code,
-                'client_id': secret.installed.client_id,
-                'client_secret': secret.installed.client_secret,
-                'redirect_uri': secret.installed.redirect_uris[1],
-                'grant_type': 'authorization_code'
-            },
-            dataType: 'json',
-            success: function(data) {
-                console.log(data);
-                resolve(data);
-            },
-            error: function(data) {
-                console.error(data);
-                reject(data);
-            }
-        });
-        */
-    })
     return promise;
 }
