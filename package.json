@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+	"debug": "electron . --debug=5858"
   },
   "author": "Emil Andersson Hammarström <emil.a.hammarstrom@gmail.com>",
   "license": "MIT",

@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+'use strict'
 const googleAuth = require('../engine/api-auth/google.js');
 const BrowserWindow = require('electron').BrowserWindow;
 

@@ -1,10 +1,11 @@
-/*jshint esversion: 6 */
+'use strict'
 const app = require('electron').app;
 const BrowserWindow = require('electron').BrowserWindow;
 const Menu = require('electron').Menu;
 const ipcMain = require('electron').ipcMain;
+const gmailAuthWindow = require('./windows/gmail-auth.js');
 
-const gmailAuth = require('./windows/gmail-auth.js');
+const debug = require('./debugger.js'); // debug code
 
 let mainWindow = null;
 
@@ -22,14 +23,17 @@ app.on('ready', function() {
 
     ipcMain.on('asynchronous-message', function(event, arg) {
         if (arg === 'show-auth-gmail') {
-            gmailAuth.startAuthorization();
+            gmailAuthWindow.startAuthorization();
         }
     });
+
+    /** DEBUG CODE IS RAN BEFORE APP STARTUP **/
+    debug.printLabels();
+    /** END **/
 
     mainWindow.on('closed', function() {
         // maybe store windows in array later and dereference all on mainWindow close.
         // depends on if program will become multi-windowed
-        authWindow = null;
         mainWindow = null;
     });
 });

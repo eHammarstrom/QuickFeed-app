@@ -1,16 +1,17 @@
-/*jshint esversion: 6 */
+'use strict'
 const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
 const googleAuth = require('google-auth-library');
 
-const SCOPES = ['https://www.googleapis.com/auth/gmail.compose'];
+const SCOPES = ['https://mail.google.com/'];
 const TOKEN_DIR = (process.env.HOME ||
     process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 
 const secret = readSecret();
 
+/** Working as currently intended **/
 function readSecret() {
     let promise = new Promise(function(resolve, reject) {
         fs.readFile(__dirname + '/gmail_client_secret.json', function(err, content) {
@@ -18,7 +19,6 @@ function readSecret() {
                 reject(err);
             } else {
                 let contentJson = JSON.parse(content);
-                console.log('readSecret > \n\t' + JSON.stringify(contentJson));
                 resolve(contentJson);
             }
         });
@@ -29,10 +29,11 @@ function readSecret() {
 function readToken() {
     let promise = new Promise(function(resolve, reject) {
         fs.readFile(TOKEN_DIR + 'test.json', function(err, token) {
+            console.log(JSON.stringify(JSON.parse(token)));
             if (err) {
                 reject(false);
             } else {
-                resolve(token);
+                resolve(JSON.parse(token));
             }
         });
     });
@@ -54,13 +55,20 @@ function storeToken(token) {
 function getOAuth2Client() {
     let promise = new Promise(function(resolve, reject) {
         secret.then(function(json) {
+            console.log('secret json \t\t' + JSON.stringify(json));
             let clientSecret = json.installed.client_secret;
             let clientId = json.installed.client_id;
             let redirectUrl = json.installed.redirect_uris[0];
             let auth = new googleAuth();
             let oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-            console.log('getOAuth2Client > \n\t created oauth2Client');
-            resolve(oauth2Client);
+            readToken().then(function(token) {
+                oauth2Client.credentials = token;
+                console.log('getOAuth2Client > \n\t created oauth2Client');
+                console.log('\t\t' + JSON.stringify(oauth2Client));
+                resolve(oauth2Client);
+            }).catch(function() {
+                reject(new Error('Could not assign token to oauth2client'));
+            });
         }).catch(function(err) {
             reject(new Error('getOAuth2Client > Failed to get oauth2Client'));
         })
@@ -107,6 +115,10 @@ module.exports = {
         readToken.then(function(token) {
             return token;
         });
+    },
+
+    getAuthorizedOAuth2Client: function(callback) {
+        return getOAuth2Client();
     }
 
 };
