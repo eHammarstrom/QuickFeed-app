@@ -10,16 +10,16 @@ const debug = require('./debugger.js'); // debug code
 let mainWindow = null;
 
 app.on('ready', function() {
-    mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 800,
-        minWidth: 600,
-        minHeight: 400
-    });
+	mainWindow = new BrowserWindow({
+		width: 1000,
+		height: 800,
+		minWidth: 800,
+		minHeight: 400
+	});
 
-    mainWindow.setMenu(null); // we design and set menu in main.js instead
-    mainWindow.loadURL('file://' + __dirname + '/main.html');
-    // mainWindow.openDevTools(); // remove line from production
+	mainWindow.setMenu(null); // we design and set menu in main.js instead
+	mainWindow.loadURL('file://' + __dirname + '/main.html');
+	// mainWindow.openDevTools(); // remove line from production
 
     ipcMain.on('asynchronous-message', function(event, arg) {
         if (arg === 'show-auth-gmail') {
