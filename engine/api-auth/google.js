@@ -25,7 +25,10 @@ function readSecret(callback) {
 function readToken(callback) {
     fs.readFile(TOKEN_DIR + 'test.json', function(err, token) {
         if (err) {
-            callback(err);
+            if (err.code != 'ENOENT') {
+                throw err;
+            }
+            console.log('\tREAD TOKEN > User has not authenticated a google account yet.');
         } else {
             console.log('\tREAD TOKEN > ' + JSON.stringify(JSON.parse(token)));
             callback(null, JSON.parse(token));
@@ -55,8 +58,6 @@ function getOAuth2Client() {
                 readToken(callback);
             }
         ], (err, results) => {
-            if (err) throw err;
-
             let secret = results[0];
             let token = results[1];
 
@@ -67,7 +68,9 @@ function getOAuth2Client() {
                 secret.installed.redirect_uris[0]
             );
 
-            oauth2Client.credentials = token;
+            if (token) {
+                oauth2Client.credentials = token;
+            }
 
             console.log('\tCREATED AUTH CLIENT > ' + JSON.stringify(oauth2Client));
             resolve(oauth2Client);

@@ -30,6 +30,7 @@ app.on('ready', function() {
     /** DEBUG CODE IS RAN BEFORE APP STARTUP **/
     debug.printLabels();
 	debug.printMessages();
+	debug.printProfile();
     /** END **/
 
     mainWindow.on('closed', function() {
