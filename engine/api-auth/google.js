@@ -14,7 +14,7 @@ const TOKEN_DIR = (process.env.HOME ||
 function readSecret(callback) {
     fs.readFile(__dirname + '/gmail_client_secret.json', function(err, content) {
         if (err) {
-            callback(err);
+            throw err;
         } else {
             console.log('\tREAD SECRET > ' + JSON.stringify(JSON.parse(content)));
             callback(null, JSON.parse(content));
@@ -29,6 +29,7 @@ function readToken(callback) {
                 throw err;
             }
             console.log('\tREAD TOKEN > User has not authenticated a google account yet.');
+            callback(err);
         } else {
             console.log('\tREAD TOKEN > ' + JSON.stringify(JSON.parse(token)));
             callback(null, JSON.parse(token));
@@ -50,7 +51,7 @@ function storeToken(token) {
 
 function getOAuth2Client() {
     let promise = new Promise(function(resolve, reject) {
-        async.parallel([
+        async.series([
             (callback) => {
                 readSecret(callback);
             },
@@ -68,7 +69,7 @@ function getOAuth2Client() {
                 secret.installed.redirect_uris[0]
             );
 
-            if (token) {
+            if (!err) {
                 oauth2Client.credentials = token;
             }
 

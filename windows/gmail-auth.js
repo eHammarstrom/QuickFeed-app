@@ -4,13 +4,13 @@ const BrowserWindow = require('electron').BrowserWindow;
 
 exports.startAuthorization = function() {
     let authWindow = new BrowserWindow({
-        'use-content-size': true,
+        'useContentSize': true,
         center: true,
         show: false,
         resizeable: false,
-        'always-on-top': true,
-        'standard-window': true,
-        'auto-hide-menu-bar': true
+        'alwaysOnTop': true,
+        'standardWindow': true,
+        'autoHideMenuBar': true
     });
     authWindow.openDevTools();
 
