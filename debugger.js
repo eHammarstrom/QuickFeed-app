@@ -15,6 +15,19 @@ module.exports = {
             }
             console.log('we got the label list');
         })
+    },
+
+    printMessages: function() {
+        gmail.getMailMessageList(function(messages) {
+        if (messages.length == 0) {
+                console.error('No messages found, list is> \n\t' + messages);
+            } else {
+                for (let i = 0; i < messages.length; i++) {
+                    let message = messages[i];
+                    console.log(message);
+                }
+            }
+        });
     }
 
 };
