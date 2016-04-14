@@ -5,50 +5,9 @@ const async = require('async');
 const gmail = google.gmail('v1');
 const authClient = googleAuth.getAuthorizedOAuth2Client();
 
-function getMailMessageListIds(callback) {
-    authClient.then(function(client) {
-        gmail.users.messages.list({
-            auth: client,
-            userId: 'me',
-            includeSpamTrash: false,
-            maxResults: 10,
+let gmailState = {
 
-        }, function(err, response) {
-            if (err) {
-                console.error('getMailMessagsListIds > \n\t' + err);
-                return;
-            }
-            callback(response.messages);
-        });
-    });
-}
-
-function getMailMessageListPayloads(finalCallback) {
-    getMailMessageListIds(function(messages) {
-        let acquiredMessages = {};
-        async.forEachOf(messages, function(value, key, callback) {
-            authClient.then(function(client) {
-                gmail.users.messages.get({
-                    auth: client,
-                    userId: 'me',
-                    id: value.id,
-                    format: 'minimal'
-                }, function(err, response) {
-                    console.log(response);
-                    acquiredMessages[key] = response;
-                    callback();
-                });
-            }).catch(function(err) {
-                console.error(err);
-            });
-        }, function(err) {
-            if (err) console.error(err.message);
-            finalCallback(acquiredMessages);
-        });
-    });
-}
-
-module.exports = {
+    storedNextPageToken: null,
 
     getProfile: function(callback) {
         authClient.then(function(client) {
@@ -85,5 +44,53 @@ module.exports = {
             callback(messages);
         });
     }
+};
 
+function getMailMessageListIds(callback) {
+    authClient.then(function(client) {
+        gmail.users.messages.list({
+            auth: client,
+            userId: 'me',
+            includeSpamTrash: false,
+            maxResults: 25,
+            pageToken: gmailState.storedNextPageToken
+        }, function(err, response) {
+            if (err) {
+                console.error('getMailMessagsListIds > \n\t' + err);
+                return;
+            }
+            gmailState.storedNextPageToken = response.nextPageToken;
+            //console.log(gmailState.storedNextPageToken);
+            callback(response.messages);
+        });
+    });
+}
+
+function getMailMessageListPayloads(finalCallback) {
+    getMailMessageListIds(function(messages) {
+        let acquiredMessages = {};
+        async.forEachOf(messages, function(value, key, callback) {
+            authClient.then(function(client) {
+                gmail.users.messages.get({
+                    auth: client,
+                    userId: 'me',
+                    id: value.id,
+                    format: 'full'
+                }, function(err, response) {
+                    //console.log(response);
+                    acquiredMessages[key] = response;
+                    callback();
+                });
+            }).catch(function(err) {
+                console.error(err);
+            });
+        }, function(err) {
+            if (err) console.error(err.message);
+            finalCallback(acquiredMessages);
+        });
+    });
+}
+
+module.exports = {
+    instance: gmailState
 };

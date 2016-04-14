@@ -5,7 +5,7 @@ const Menu = require('electron').Menu;
 const ipcMain = require('electron').ipcMain;
 const gmailAuthWindow = require('./windows/gmail-auth.js');
 
-const debug = require('./debugger.js'); // debug code
+//const debug = require('./debugger.js'); // debug code
 
 let mainWindow = null;
 
@@ -19,7 +19,7 @@ app.on('ready', function() {
 
 	mainWindow.setMenu(null); // we design and set menu in main.js instead
 	mainWindow.loadURL('file://' + __dirname + '/main.html');
-	// mainWindow.openDevTools(); // remove line from production
+	//mainWindow.openDevTools(); // remove line from production
 
     ipcMain.on('asynchronous-message', function(event, arg) {
         if (arg === 'show-auth-gmail') {
@@ -28,9 +28,9 @@ app.on('ready', function() {
     });
 
     /** DEBUG CODE IS RAN BEFORE APP STARTUP **/
-    debug.printLabels();
-	debug.printMessages();
-	debug.printProfile();
+    //debug.printLabels();
+	//debug.printMessages();
+	//debug.printProfile();
     /** END **/
 
     mainWindow.on('closed', function() {

@@ -2,7 +2,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
-const googleAuth = require('google-auth-library');
+const OAuth2 = google.auth.OAuth2;
 const async = require('async');
 
 const SCOPES = ['https://mail.google.com/'];
@@ -62,8 +62,7 @@ function getOAuth2Client() {
             let secret = results[0];
             let token = results[1];
 
-            let auth = new googleAuth();
-            let oauth2Client = new auth.OAuth2(
+            let oauth2Client = new OAuth2(
                 secret.installed.client_id,
                 secret.installed.client_secret,
                 secret.installed.redirect_uris[0]
@@ -96,26 +95,9 @@ module.exports = {
         });
     },
 
-    requestToken: function(code) {
-        let promise = new Promise(function(resolve, reject) {
-            getOAuth2Client().then(function(oauth2Client) {
-                oauth2Client.getToken(code, function(err, token) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(token);
-                    }
-                });
-            });
-        });
-        return promise;
-    },
-
     writeToken: function(token) {
         storeToken(token);
     },
-
-    readToken: function() { },
 
     getAuthorizedOAuth2Client: function(callback) {
         return getOAuth2Client();
