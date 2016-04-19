@@ -31,6 +31,11 @@ $('#messages').click(function(e) {
 	contentLoadHtml('/views/messages/messages.html', addNavSelected('#messages'));
 });
 
+$('#settings').click(function(e) {
+	e.preventDefault();
+	contentLoadHtml('/views/settings/settings.html', addNavSelected('#settings'));
+});
+
 /**
 * Remove existing .selected class and add to specified element
 */
