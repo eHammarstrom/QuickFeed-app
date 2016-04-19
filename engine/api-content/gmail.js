@@ -75,7 +75,7 @@ function getMailMessageListPayloads(finalCallback) {
                     auth: client,
                     userId: 'me',
                     id: value.id,
-                    format: 'full'
+                    format: 'metadata'
                 }, function(err, response) {
                     //console.log(response);
                     acquiredMessages[key] = response;
@@ -92,5 +92,24 @@ function getMailMessageListPayloads(finalCallback) {
 }
 
 module.exports = {
-    instance: gmailState
+
+    instance: gmailState,
+
+    getHeaders: function(message) {
+        /*
+        if (Object.prototype.toString.call(fields) !== '[object Array]') {
+            throw 'fields must be passed as an array object';
+        }
+        */
+
+        let headers = message.payload.headers;
+        let parseData = {};
+
+        for (let i = 0; i < headers.length; i++) {
+            parseData[headers[i]['name']] = headers[i]['value'];
+        }
+
+        return parseData;
+    }
+
 };

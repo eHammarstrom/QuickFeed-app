@@ -7,14 +7,19 @@ function printMessages() {
     gmailInstance.getMailMessageList(function(messages) {
         let i = 1;
         for (let key in messages) {
-            let date = new Date(messages[key].internalDate * 1000);
+            let headers = messages[key].payload.headers;
+
+            let parsedHeaders =
+                gmail.getHeaders(messages[key]);
+
+            let dateObj = new Date(Date.parse(parsedHeaders['Date']));
 
             $('#mailTable>tbody').append(
                 $('<tr class="' + messages[key].id + '">' +
-                    '<td>' + messages[key].payload.headers['From'] + '</td>' +
-                    '<td>' + messages[key].snippet + '</td>' +
-                    '<td>' + date + '</td>' +
-                '</tr>').hide().delay(100 * i).fadeIn(1000)
+                    '<td>' + parsedHeaders['From'] + '</td>' +
+                    '<td>' + parsedHeaders['Subject'] + '</td>' +
+                    '<td>' + dateObj.toISOString().slice(0, 10) + '</td>' +
+                    '</tr>').hide().delay(100 * i).fadeIn(1000)
             );
 
             i++;
@@ -22,6 +27,6 @@ function printMessages() {
     });
 }
 
-$('#mailTable>tbody').click(function() {
+$('#getMail').click(function() {
     printMessages();
 });
