@@ -38,6 +38,7 @@ function readToken(callback) {
 }
 
 function storeToken(token) {
+    console.log('storeToken(token) > CALLED');
     try {
         fs.mkdirSync(TOKEN_DIR);
     } catch (err) {
@@ -93,6 +94,21 @@ module.exports = {
         }).catch(function(err) {
             throw err;
         });
+    },
+    
+    requestToken: function(code) {
+        let promise = new Promise(function(resolve, reject) {
+            getOAuth2Client().then(function(oauth2Client) {
+                oauth2Client.getToken(code, function(err, token) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(token);
+                    }
+                });
+            });
+        });
+        return promise;
     },
 
     writeToken: function(token) {
