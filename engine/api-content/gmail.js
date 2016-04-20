@@ -5,7 +5,30 @@ const async = require('async');
 const gmail = google.gmail('v1');
 const authClient = googleAuth.getAuthorizedOAuth2Client();
 
-let gmailState = {
+/* STRUCTURE OF FILE:
+ * 1. Functions splitted into Object map categories for export
+ * 2. Module exports
+ * 3. Private functions
+ */
+
+let cache = [];
+
+let parse = {
+
+    getHeaders: function(message) {
+        let headers = message.payload.headers;
+        let parseData = {};
+
+        for (let i = 0; i < headers.length; i++) {
+            parseData[headers[i]['name']] = headers[i]['value'];
+        }
+
+        return parseData;
+    }
+
+};
+
+let request = {
 
     storedNextPageToken: null,
 
@@ -46,6 +69,16 @@ let gmailState = {
     }
 };
 
+module.exports = {
+
+    cache: cache,
+
+    request: request,
+
+    parse: parse
+
+};
+
 function getMailMessageListIds(callback) {
     authClient.then(function(client) {
         gmail.users.messages.list({
@@ -53,14 +86,14 @@ function getMailMessageListIds(callback) {
             userId: 'me',
             includeSpamTrash: false,
             maxResults: 25,
-            pageToken: gmailState.storedNextPageToken
+            pageToken: request.storedNextPageToken
         }, function(err, response) {
             if (err) {
                 console.error('getMailMessagsListIds > \n\t' + err);
                 return;
             }
-            gmailState.storedNextPageToken = response.nextPageToken;
-            //console.log(gmailState.storedNextPageToken);
+            request.storedNextPageToken = response.nextPageToken;
+            //console.log(request.storedNextPageToken);
             callback(response.messages);
         });
     });
@@ -79,6 +112,7 @@ function getMailMessageListPayloads(finalCallback) {
                 }, function(err, response) {
                     //console.log(response);
                     acquiredMessages[key] = response;
+                    cache.push(response);
                     callback();
                 });
             }).catch(function(err) {
@@ -90,26 +124,3 @@ function getMailMessageListPayloads(finalCallback) {
         });
     });
 }
-
-module.exports = {
-
-    instance: gmailState,
-
-    getHeaders: function(message) {
-        /*
-        if (Object.prototype.toString.call(fields) !== '[object Array]') {
-            throw 'fields must be passed as an array object';
-        }
-        */
-
-        let headers = message.payload.headers;
-        let parseData = {};
-
-        for (let i = 0; i < headers.length; i++) {
-            parseData[headers[i]['name']] = headers[i]['value'];
-        }
-
-        return parseData;
-    }
-
-};

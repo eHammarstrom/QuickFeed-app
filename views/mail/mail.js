@@ -1,32 +1,49 @@
-const gmail = require('../../engine/api-content/gmail.js');
 const $ = require('jquery');
+const gmail = require('../../engine/api-content/gmail.js');
 
-let gmailInstance = gmail.instance;
+function messageToHtml(message, delay) {
+    let parsedHeaders =
+        gmail.parse.getHeaders(message);
+
+    let dateObj = new Date(Date.parse(parsedHeaders['Date']));
+
+    $('#mailTable>tbody').append(
+        $('<tr class="' + message.id + '">' +
+            '<td>' + parsedHeaders['From'] + '</td>' +
+            '<td>' + parsedHeaders['Subject'] + '</td>' +
+            '<td>' + dateObj.toISOString().slice(0, 10) + '</td>' +
+            '</tr>').hide().delay(delay).fadeIn(1000)
+    );
+}
+
+function printCache() {
+    if (gmail.cache.length !== 0) {
+        console.log('Cache is not empty!');
+        for (let i = 0; i < gmail.cache.length; i++) {
+            messageToHtml(gmail.cache[i], 100 * (i + 1));
+        }
+    }
+}
 
 function printMessages() {
-    gmailInstance.getMailMessageList(function(messages) {
+    gmail.request.getMailMessageList(function(messages) {
         let i = 1;
         for (let key in messages) {
-            let headers = messages[key].payload.headers;
-
-            let parsedHeaders =
-                gmail.getHeaders(messages[key]);
-
-            let dateObj = new Date(Date.parse(parsedHeaders['Date']));
-
-            $('#mailTable>tbody').append(
-                $('<tr class="' + messages[key].id + '">' +
-                    '<td>' + parsedHeaders['From'] + '</td>' +
-                    '<td>' + parsedHeaders['Subject'] + '</td>' +
-                    '<td>' + dateObj.toISOString().slice(0, 10) + '</td>' +
-                    '</tr>').hide().delay(100 * i).fadeIn(1000)
-            );
-
-            i++;
+            messageToHtml(messages[key], 100 * i++);
         }
     });
 }
 
-$('#getMail').click(function() {
+/** Document specific JQUERY **/
+
+// Catch the ajax call and print our email cache
+$(document).ajaxComplete(function(e, xhr, settings) {
+    if (settings.url === __dirname + '/mail.html') {
+        printCache();
+    }
+});
+
+$(document).on('click', '#getMail', function(e) {
+    e.preventDefault();
     printMessages();
 });

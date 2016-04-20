@@ -12,7 +12,7 @@ exports.startAuthorization = function() {
         'standardWindow': true,
         'autoHideMenuBar': true
     });
-    authWindow.openDevTools();
+    //authWindow.openDevTools();
 
     googleAuth.requestAuthUrl(function(url) {
         authWindow.loadURL(url);
