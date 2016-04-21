@@ -3,7 +3,6 @@ const googleAuth = require('../api-auth/google.js');
 const async = require('async');
 
 const gmail = google.gmail('v1');
-const authClient = googleAuth.getAuthorizedOAuth2Client();
 
 /* STRUCTURE OF FILE:
  * 1. Functions splitted into Object map categories for export
@@ -33,7 +32,7 @@ let request = {
     storedNextPageToken: null,
 
     getProfile: function(callback) {
-        authClient.then(function(client) {
+        googleAuth.getAuthorizedOAuth2Client().then(function(client) {
             gmail.users.getProfile({
                 auth: client,
                 userId: 'me'
@@ -48,7 +47,7 @@ let request = {
     },
 
     getMailLabelList: function(callback) {
-        authClient.then(function(client) {
+        googleAuth.getAuthorizedOAuth2Client().then(function(client) {
             gmail.users.labels.list({
                 auth: client,
                 userId: 'me'
@@ -80,7 +79,7 @@ module.exports = {
 };
 
 function getMailMessageListIds(callback) {
-    authClient.then(function(client) {
+    googleAuth.getAuthorizedOAuth2Client().then(function(client) {
         gmail.users.messages.list({
             auth: client,
             userId: 'me',
@@ -89,7 +88,7 @@ function getMailMessageListIds(callback) {
             pageToken: request.storedNextPageToken
         }, function(err, response) {
             if (err) {
-                console.error('getMailMessagsListIds > \n\t' + err);
+                //console.error('getMailMessagsListIds > \n\t' + err);
                 return;
             }
             request.storedNextPageToken = response.nextPageToken;
@@ -103,7 +102,7 @@ function getMailMessageListPayloads(finalCallback) {
     getMailMessageListIds(function(messages) {
         let acquiredMessages = {};
         async.forEachOf(messages, function(value, key, callback) {
-            authClient.then(function(client) {
+            googleAuth.getAuthorizedOAuth2Client().then(function(client) {
                 gmail.users.messages.get({
                     auth: client,
                     userId: 'me',

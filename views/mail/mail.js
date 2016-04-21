@@ -25,7 +25,9 @@ function printCache() {
         for (let i = 0; i < gmail.cache.length; i++) {
             messageToHtml(gmail.cache[i], 20 * (i + 1));
         }
+        return true;
     }
+    return false;
 }
 
 function printMessages() {
@@ -49,7 +51,9 @@ $(document).ajaxComplete(function(e, xhr, settings) {
     console.log(settings.url);
     console.log(path.normalize(__dirname + '/mail.html'));
     if (settings.url === path.normalize(__dirname + '/mail.html')) {
-        printCache();
+        if (printCache() === false) {
+            printMessages();
+        }
     }
 });
 
