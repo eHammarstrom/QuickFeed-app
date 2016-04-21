@@ -132,6 +132,10 @@ ul.alert-dropdown {
     }
 }
 
+.side-nav>li {
+    border-bottom: 2px dotted #474747;
+}
+
 .side-nav>li>ul {
     padding: 0;
 }
@@ -145,6 +149,15 @@ ul.alert-dropdown {
 
 .side-nav>li>ul>li>a:hover {
     color: #fff;
+}
+
+
+.side-nav>.selected>a {
+    color: #fff !important;
+}
+
+.side-nav>.selected {
+    background-color: #000 !important;
 }
 
 /* Flot Chart Containers */
