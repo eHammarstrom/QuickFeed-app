@@ -1,9 +1,9 @@
 const gmail = require('../../engine/api-content/gmail.js');
 const $ = require('jquery');
 
-let gmail = gmail.instance;
+let gmailInstance = gmail.instance;
 
 function printProfile() {
-    gmail.request.getProfile(function(profiles) {
+    gmailInstance.request.getProfile(function(profiles) {
     });
   }
