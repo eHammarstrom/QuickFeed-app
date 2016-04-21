@@ -43,6 +43,8 @@ $(document).ready(function() {
 
 // Catch the ajax call and print our email cache
 $(document).ajaxComplete(function(e, xhr, settings) {
+    console.log(settings.url);
+    console.log(path.normalize(__dirname + '/mail.html'));
     if (settings.url === path.normalize(__dirname + '/mail.html')) {
         printCache();
     }

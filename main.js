@@ -1,6 +1,7 @@
 const remote = require('electron').remote;
 const Menu = remote.Menu;
 const ipcRenderer = require('electron').ipcRenderer;
+const path = require('path');
 
 let menu = Menu.buildFromTemplate([
 	{
@@ -50,7 +51,7 @@ function contentLoadHtml(htmlPath, callback) {
 
 		// now start loading html from views file via ajax
 		$.ajax({
-			url: __dirname + htmlPath,
+			url: path.normalize(__dirname + htmlPath),
 			success: function(html) {
 
 				// now we can put html back into #content and fade it in
