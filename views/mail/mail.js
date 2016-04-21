@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const gmail = require('../../engine/api-content/gmail.js');
+const path = require('path');
 
 function messageToHtml(message, delay) {
     let parsedHeaders =
@@ -36,9 +37,13 @@ function printMessages() {
 
 /** Document specific JQUERY **/
 
+$(document).ready(function() {
+    printMessages();
+});
+
 // Catch the ajax call and print our email cache
 $(document).ajaxComplete(function(e, xhr, settings) {
-    if (settings.url === __dirname + '/mail.html') {
+    if (settings.url === path.normalize(__dirname + '/mail.html')) {
         printCache();
     }
 });

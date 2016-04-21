@@ -85,7 +85,7 @@ function getMailMessageListIds(callback) {
             auth: client,
             userId: 'me',
             includeSpamTrash: false,
-            maxResults: 25,
+            maxResults: 30,
             pageToken: request.storedNextPageToken
         }, function(err, response) {
             if (err) {
