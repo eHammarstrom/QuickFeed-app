@@ -50,7 +50,7 @@ function addNavSelected(navButtonClass) {
 */
 function contentLoadHtml(htmlPath, callback) {
 	// fade out content div and empty it.
-	$('#content').fadeOut(500, function() {
+	$('#content').fadeOut(175, function() {
 
 		$('#content').empty();
 
@@ -61,7 +61,7 @@ function contentLoadHtml(htmlPath, callback) {
 
 				// now we can put html back into #content and fade it in
 				$('#content').html(html).promise().done(function() {
-					$('#content').fadeIn(500);
+					$('#content').fadeIn(175);
 				});
 
 			}
