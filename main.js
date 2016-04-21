@@ -41,7 +41,7 @@ $('#settings').click(function(e) {
 * Remove existing .selected class and add to specified element
 */
 function addNavSelected(navButtonClass) {
-	$('#navigation>ul>li.selected').removeClass('selected');
+	$('.side-nav>.selected').removeClass('selected');
 	$(navButtonClass).addClass('selected');
 }
 
