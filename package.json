@@ -9,7 +9,9 @@
   "author": "Emil Andersson Hammarström <emil.a.hammarstrom@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron-prebuilt": "^0.37.5"
+    "electron-prebuilt": "^0.37.5",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.1"
   },
   "dependencies": {
     "async": "^2.0.0-rc.3",
