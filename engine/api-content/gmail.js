@@ -101,8 +101,9 @@ function getMailMessageListIds(callback) {
 function getMailMessageListPayloads(finalCallback) {
     getMailMessageListIds(function(messages) {
         let acquiredMessages = {};
+        let authClient = googleAuth.getAuthorizedOAuth2Client();
         async.forEachOf(messages, function(value, key, callback) {
-            googleAuth.getAuthorizedOAuth2Client().then(function(client) {
+            authClient.then(function(client) {
                 gmail.users.messages.get({
                     auth: client,
                     userId: 'me',
