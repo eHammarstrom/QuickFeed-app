@@ -5,8 +5,6 @@ const Menu = require('electron').Menu;
 const ipcMain = require('electron').ipcMain;
 const gmailAuthWindow = require('./windows/gmail-auth.js');
 
-//const debug = require('./debugger.js'); // debug code
-
 let mainWindow = null;
 
 app.on('ready', function() {
@@ -26,12 +24,6 @@ app.on('ready', function() {
             gmailAuthWindow.startAuthorization();
         }
     });
-
-    /** DEBUG CODE IS RAN BEFORE APP STARTUP **/
-    //debug.printLabels();
-	//debug.printMessages();
-	//debug.printProfile();
-    /** END **/
 
     mainWindow.on('closed', function() {
         // maybe store windows in array later and dereference all on mainWindow close.
