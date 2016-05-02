@@ -1,3 +1,6 @@
+#mailTable:hover {
+  cursor: default !important; }
+
 .button {
   display: inline-block;
   border-radius: 4px;

@@ -11,7 +11,7 @@ function messageToHtml(message, delay) {
     let dateObj = new Date(Date.parse(parsedHeaders['Date']));
 
     $('#mailTable>tbody').append(
-        $('<tr class="' + message.id + '">' +
+        $('<tr id="' + message.id + '">' +
             '<td>' + parsedHeaders['From'] + '</td>' +
             '<td>' + parsedHeaders['Subject'] + '</td>' +
             '<td>' + dateObj.toISOString().slice(0, 10) + '</td>' +
@@ -26,8 +26,9 @@ function printCache() {
             messageToHtml(gmail.cache[i], 20 * (i + 1));
         }
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 function printMessages() {
@@ -37,6 +38,21 @@ function printMessages() {
             messageToHtml(messages[key], 20 * i++);
         }
         scrollPrint = true;
+    });
+}
+
+function printMessageContent(message_id) {
+    // ask gmail for contents then display
+
+    gmail.request.getMailCachedContent(message_id, function(message) {
+        console.log(message.id);
+        $('#mailTable>tbody>tr#' + message.id).after(
+            $('<tr id="' + message.id + '_snippet">' +
+            '<td></td>' +
+            '<td>' + message.snippet + '</td>' +
+            '<td></td>' +
+            '</tr>').hide().delay(250).fadeIn(250)
+        );
     });
 }
 
@@ -59,11 +75,11 @@ $(document).ajaxComplete(function(e, xhr, settings) {
 
 $(window).scroll(function() {
     if (($(window).scrollTop() + $(window).height() >
-        $(document).height() - $(document).height() / 3) &&
+            $(document).height() - $(document).height() / 3) &&
         scrollPrint === true) {
-            scrollPrint = false;
-            printMessages();
-        }
+        scrollPrint = false;
+        printMessages();
+    }
 });
 
 /* SHOULD BE REMOVED LATER ON WHEN SCROLL FUNCTION FEELS 110% NICE
@@ -76,4 +92,10 @@ $(document).on('click', '#getMail', function(e) {
 $(document).on('click', '#sendMail', function(e) {
     e.preventDefault();
     // Here we will toggle window and prepare for mail to be sent
+});
+
+$(document).on('click', '#mailTable>tbody>tr', function(e) {
+    e.preventDefault();
+    console.log(this.id);
+    printMessageContent(this.id);
 });
