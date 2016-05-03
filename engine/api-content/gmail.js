@@ -65,6 +65,17 @@ let request = {
         getMailMessageListPayloads(function(messages) {
             callback(messages);
         });
+    },
+
+    getMailCachedContent: function(message_id, finalCallback) {
+        async.each(cache, function(message, callback) {
+            if (message.id === message_id) {
+                finalCallback(message);
+                callback(message);
+            } else {
+                callback();
+            }
+        });
     }
 };
 
@@ -108,7 +119,7 @@ function getMailMessageListPayloads(finalCallback) {
                     auth: client,
                     userId: 'me',
                     id: value.id,
-                    format: 'metadata'
+                    format: 'full'
                 }, function(err, response) {
                     //console.log(response);
                     acquiredMessages[key] = response;
