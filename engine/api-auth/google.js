@@ -16,7 +16,7 @@ function readSecret(callback) {
         if (err) {
             throw err;
         } else {
-            console.log('\tREAD SECRET > ' + JSON.stringify(JSON.parse(content)));
+            //console.log('\tREAD SECRET > ' + JSON.stringify(JSON.parse(content)));
             callback(null, JSON.parse(content));
         }
     });
@@ -28,17 +28,17 @@ function readToken(callback) {
             if (err.code != 'ENOENT') {
                 throw err;
             }
-            console.log('\tREAD TOKEN > User has not authenticated a google account yet.');
+            //console.log('\tREAD TOKEN > User has not authenticated a google account yet.');
             callback(err);
         } else {
-            console.log('\tREAD TOKEN > ' + JSON.stringify(JSON.parse(token)));
+            //console.log('\tREAD TOKEN > ' + JSON.stringify(JSON.parse(token)));
             callback(null, JSON.parse(token));
         }
     });
 }
 
 function storeToken(token) {
-    console.log('storeToken(token) > CALLED');
+    //console.log('storeToken(token) > CALLED');
     try {
         fs.mkdirSync(TOKEN_DIR);
     } catch (err) {
@@ -47,7 +47,7 @@ function storeToken(token) {
         }
     }
     fs.writeFile(TOKEN_DIR + 'test.json', JSON.stringify(token));
-    console.log('\tstoreToken > ' + TOKEN_DIR + 'test.json\t' + JSON.stringify(token));
+    //console.log('\tstoreToken > ' + TOKEN_DIR + 'test.json\t' + JSON.stringify(token));
 }
 
 function getOAuth2Client() {
@@ -73,7 +73,7 @@ function getOAuth2Client() {
                 oauth2Client.credentials = token;
             }
 
-            console.log('\tCREATED AUTH CLIENT > ' + JSON.stringify(oauth2Client));
+            //console.log('\tCREATED AUTH CLIENT > ' + JSON.stringify(oauth2Client));
             resolve(oauth2Client);
         });
     });
@@ -89,13 +89,13 @@ module.exports = {
                 scope: SCOPES
             });
 
-            console.log('\tURL GENERATED > ' + url);
+            //console.log('\tURL GENERATED > ' + url);
             callback(url);
         }).catch(function(err) {
             throw err;
         });
     },
-    
+
     requestToken: function(code) {
         let promise = new Promise(function(resolve, reject) {
             getOAuth2Client().then(function(oauth2Client) {

@@ -148,11 +148,13 @@ function getMailMessageListIds(callback) {
 }
 
 function getMailMessageListPayloads(finalCallback) {
+    let startTime = new Date().getTime();
     getMailMessageListIds(function(messages) {
         let acquiredMessages = {};
         let authClient = googleAuth.getAuthorizedOAuth2Client();
         async.forEachOf(messages, function(value, key, callback) {
             authClient.then(function(client) {
+                let singleStartTime = new Date().getTime();
                 gmail.users.messages.get({
                     auth: client,
                     userId: 'me',
@@ -161,6 +163,10 @@ function getMailMessageListPayloads(finalCallback) {
                 }, function(err, response) {
                     acquiredMessages[key] = response;
                     cache.push(response);
+                    console.log(
+                        'gmail.js > getMailMessageListPayloads > mail #' +
+                        key + ': '+
+                        (new Date().getTime() - singleStartTime) + 'ms');
                     callback();
                 });
             }).catch(function(err) {
@@ -168,6 +174,9 @@ function getMailMessageListPayloads(finalCallback) {
             });
         }, function(err) {
             if (err) console.error(err.message);
+            console.log(
+                'gmail.js > getMailMessageListPayloads: ' +
+                (new Date().getTime() - startTime) + 'ms');
             finalCallback(acquiredMessages);
         });
     });
