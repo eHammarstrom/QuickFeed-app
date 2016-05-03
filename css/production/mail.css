@@ -1,5 +1,18 @@
-#mailTable:hover {
-  cursor: default !important; }
+#page-wrapper {
+  max-width: 100%;
+  padding: 5px; }
+  #page-wrapper .col-lg-12 {
+    padding: 0 !important;
+    max-width: 100%; }
+  #page-wrapper .row {
+    margin: 0; }
+  #page-wrapper #mailTable th {
+    max-width: 100px;
+    min-width: 100px; }
+    #page-wrapper #mailTable th .subject {
+      max-width: 80%; }
+  #page-wrapper #mailTable:hover {
+    cursor: default !important; }
 
 .button {
   display: inline-block;

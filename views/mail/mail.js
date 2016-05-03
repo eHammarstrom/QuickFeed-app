@@ -42,15 +42,12 @@ function printMessages() {
 }
 
 function printMessageContent(message_id) {
-    // ask gmail for contents then display
-
     gmail.request.getMailCachedContent(message_id, function(message) {
-        console.log(message.id);
+        let content = gmail.parse.getBody(message);
+
         $('#mailTable>tbody>tr#' + message.id).after(
             $('<tr id="' + message.id + '_snippet">' +
-            '<td></td>' +
-            '<td>' + message.snippet + '</td>' +
-            '<td></td>' +
+            '<td colspan="3">' + content + '</td>' +
             '</tr>').hide().delay(250).fadeIn(250)
         );
     });
