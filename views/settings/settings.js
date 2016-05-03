@@ -1,9 +1,14 @@
 const gmail = require('../../engine/api-content/gmail.js');
 const $ = require('jquery');
 
-let gmailInstance = gmail.instance;
+
 
 function printProfile() {
-    gmailInstance.request.getProfile(function(profiles) {
+    gmail.request.getProfile(function(profile) {
+      console.log(profile.emailAddress);
+      $('#gmailSettings').append(
+        ''
+      );
     });
   }
+  printProfile();
