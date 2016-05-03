@@ -55,12 +55,33 @@ function printMessageContent(message_id) {
     gmail.request.getMailCachedContent(message_id, function(message) {
         let content = gmail.parse.getBody(message);
 
+        $('.mail-display').hide();
+
         $('#mailTable>tbody>tr#' + message.id).after(
-            $('<tr id="' + message.id + '_snippet">' +
-                '<td colspan="3"><iframe id="' + message.id + '_iframe"></iframe></td>' +
+            $('<tr class="mail-display">' +
+                '<td colspan="3"><iframe frameborder="0" id="' +
+                message.id +
+                '_iframe"></iframe></td>' +
                 '</tr>').hide().fadeIn(messageContentDelay)
         );
 
+        $('html,body').animate({
+            scrollTop: $('#' + message.id).offset().top - 100
+        }, 'slow');
+
+        let $iframe = $('#' + message.id + '_iframe');
+        $iframe.ready(function() {
+            let body = $iframe.contents().find('body');
+
+            body.append(content);
+
+            let bodyHeight = body.height();
+
+            if (bodyHeight < 500)
+                $iframe.height(bodyHeight + 'px');
+            else
+                $iframe.height(500 + 'px');
+        });
     });
 }
 
