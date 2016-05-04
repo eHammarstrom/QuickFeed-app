@@ -10,6 +10,25 @@ const gmail = google.gmail('v1');
  * 3. Private functions
  */
 
+
+/** HELPERS **/
+
+function parseMultipartBody(parts) {
+    let res = '';
+    for (let i in parts) {
+        if (parts[i].mimeType === 'text/html') {
+            res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
+        } else if (parts[i].mimeType === 'text/plain') {
+            res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
+        } else {
+            res += 'MIME: ' + parts[i].mimeType;
+        }
+    }
+    return res;
+}
+
+/** object map exports **/
+
 let cache = [];
 
 let parse = {
@@ -23,6 +42,25 @@ let parse = {
         }
 
         return parseData;
+    },
+
+    getBody: function(message) {
+        //console.log(JSON.stringify(message.payload.body));
+        //console.log(JSON.stringify(message.payload.mimeType));
+
+        let mime = message.payload.mimeType;
+        let data = message.payload.body.data;
+
+        if (mime === 'text/html') {
+            return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+        } else if (mime === 'text/plain') {
+            return atob(data);
+        } else if (mime === 'multipart/alternative') {
+            let parsedBody = parseMultipartBody(message.payload.parts);
+            return parsedBody;
+        } else {
+            return 'mime was: ' + mime;
+        }
     }
 
 };
@@ -110,20 +148,25 @@ function getMailMessageListIds(callback) {
 }
 
 function getMailMessageListPayloads(finalCallback) {
+    let startTime = new Date().getTime();
     getMailMessageListIds(function(messages) {
         let acquiredMessages = {};
         let authClient = googleAuth.getAuthorizedOAuth2Client();
         async.forEachOf(messages, function(value, key, callback) {
             authClient.then(function(client) {
+                let singleStartTime = new Date().getTime();
                 gmail.users.messages.get({
                     auth: client,
                     userId: 'me',
                     id: value.id,
                     format: 'full'
                 }, function(err, response) {
-                    //console.log(response);
                     acquiredMessages[key] = response;
                     cache.push(response);
+                    console.log(
+                        'gmail.js > getMailMessageListPayloads > mail #' +
+                        key + ': '+
+                        (new Date().getTime() - singleStartTime) + 'ms');
                     callback();
                 });
             }).catch(function(err) {
@@ -131,6 +174,9 @@ function getMailMessageListPayloads(finalCallback) {
             });
         }, function(err) {
             if (err) console.error(err.message);
+            console.log(
+                'gmail.js > getMailMessageListPayloads: ' +
+                (new Date().getTime() - startTime) + 'ms');
             finalCallback(acquiredMessages);
         });
     });
