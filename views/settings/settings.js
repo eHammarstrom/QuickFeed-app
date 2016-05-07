@@ -8,8 +8,12 @@ let currentAccount;
 /**Loads the current profile and other active accounts
     to dropdown menu*/
 function printProfiles() {
+  let account = currentAccount;
+  if(typeof account == 'undefined'){
+    account = 'No accounts found';
+  }
   $('#activeButton').append(
-    currentAccount +
+    account +
     '<span class="caret"></span>'
   );
 
