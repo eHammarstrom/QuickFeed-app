@@ -65,10 +65,12 @@ function printMessageContent(message_id) {
                 '</tr>').hide().fadeIn(messageContentDelay)
         );
 
+        // scroll to focus of content
         $('html,body').animate({
             scrollTop: $('#' + message.id).offset().top - 100
         }, 'slow');
 
+        // get the spawned iframe, fill the contents and expand the view of it
         let $iframe = $('#' + message.id + '_iframe');
         $iframe.ready(function() {
             let body = $iframe.contents().find('body');
@@ -77,10 +79,16 @@ function printMessageContent(message_id) {
 
             let bodyHeight = body.height();
 
+            console.log('HEIGHT ' + bodyHeight);
+
+            /*
             if (bodyHeight < 500)
                 $iframe.height(bodyHeight + 'px');
             else
                 $iframe.height(500 + 'px');
+            */
+
+            $iframe.height(500 + 'px');
         });
     });
 }

@@ -19,7 +19,7 @@ function parseMultipartBody(parts) {
         if (parts[i].mimeType === 'text/html') {
             res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
         } else if (parts[i].mimeType === 'text/plain') {
-            res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            //res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
         } else {
             res += 'MIME: ' + parts[i].mimeType;
         }
@@ -59,7 +59,7 @@ let parse = {
             let parsedBody = parseMultipartBody(message.payload.parts);
             return parsedBody;
         } else {
-            return 'mime was: ' + mime;
+            return 'Mime was: ' + mime + ' and cannot currently be handled.';
         }
     }
 
