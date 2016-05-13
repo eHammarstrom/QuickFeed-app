@@ -51,13 +51,10 @@ let parse = {
         let mime = message.payload.mimeType;
         let data = message.payload.body.data;
 
-        if (mime === 'text/html') {
+        if (mime === 'text/html' || mime === 'text/plain') {
             return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
-        } else if (mime === 'text/plain') {
-            return atob(data);
         } else if (mime === 'multipart/alternative') {
-            let parsedBody = parseMultipartBody(message.payload.parts);
-            return parsedBody;
+            return parseMultipartBody(message.payload.parts);
         } else {
             return 'Mime was: ' + mime + ' and cannot currently be handled.';
         }
