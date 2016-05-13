@@ -98,7 +98,8 @@ let request = {
 
     getMailMessageList: function(callback) {
         getMailMessageListPayloads(function(messages) {
-            callback(messages);
+            if (typeof callback === 'function')
+                callback(messages);
         });
     },
 
