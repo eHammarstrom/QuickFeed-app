@@ -19,6 +19,11 @@ let menu = Menu.buildFromTemplate([
 
 Menu.setApplicationMenu(menu);
 
+/* mail pre-fetching */
+const gmail = require('./engine/api-content/gmail.js');
+// implicitly fills the mail cache
+gmail.request.getMailMessageList();
+
 /* html interaction code */
 const $ = require('jquery');
 

@@ -19,7 +19,7 @@ function parseMultipartBody(parts) {
         if (parts[i].mimeType === 'text/html') {
             res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
         } else if (parts[i].mimeType === 'text/plain') {
-            res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            //res += atob(parts[i].body.data.replace(/-/g, '+').replace(/_/g, '/'));
         } else {
             res += 'MIME: ' + parts[i].mimeType;
         }
@@ -51,15 +51,12 @@ let parse = {
         let mime = message.payload.mimeType;
         let data = message.payload.body.data;
 
-        if (mime === 'text/html') {
+        if (mime === 'text/html' || mime === 'text/plain') {
             return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
-        } else if (mime === 'text/plain') {
-            return atob(data);
         } else if (mime === 'multipart/alternative') {
-            let parsedBody = parseMultipartBody(message.payload.parts);
-            return parsedBody;
+            return parseMultipartBody(message.payload.parts);
         } else {
-            return 'mime was: ' + mime;
+            return 'Mime was: ' + mime + ' and cannot currently be handled.';
         }
     }
 
@@ -101,7 +98,8 @@ let request = {
 
     getMailMessageList: function(callback) {
         getMailMessageListPayloads(function(messages) {
-            callback(messages);
+            if (typeof callback === 'function')
+                callback(messages);
         });
     },
 
