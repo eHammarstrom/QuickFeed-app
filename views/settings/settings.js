@@ -2,6 +2,7 @@ const gmail = require('../../engine/api-content/gmail.js');
 const $ = require('jquery');
 const path = require('path');
 const ipcRenderer = require('electron').ipcRenderer;
+const ipcMain = require('electron').ipcMain;
 
 let activeAccounts = [];
 let currentAccount;
@@ -31,6 +32,13 @@ function printProfiles() {
     }
 }
 
+  function cleanPrint(callback){
+    $('#dropElement').empty();
+    $('#activeButton').empty();
+
+    callback();
+  }
+
   function getProfile(callback) {
       gmail.request.getProfile(function(profile) {
         let address = profile.emailAddress;
@@ -39,13 +47,24 @@ function printProfiles() {
           activeAccounts.unshift(address);
           currentAccount = address;
         }
-        callback();
+
+        if(callback.name == 'cleanPrint')
+          callback(printProfiles);
+        else
+          callback();
+          
       });
   }
 
+/*Loads the authentication window and executes cleanPrint*/
   function loadAuth(){
     $('#authLink').click(function(){
       ipcRenderer.send('asynchronous-message','show-auth-gmail');
+      getProfile(cleanPrint);
+    /*  ipcMain.on('asynchronous-reply', function(event, arg) {
+        console.log('reply'); // prints "pong"
+      });*/
+
     });
   }
 
