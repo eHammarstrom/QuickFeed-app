@@ -61,10 +61,6 @@ function printProfiles() {
     $('#authLink').click(function(){
       ipcRenderer.send('asynchronous-message','show-auth-gmail');
       getProfile(cleanPrint);
-    /*  ipcMain.on('asynchronous-reply', function(event, arg) {
-        console.log('reply'); // prints "pong"
-      });*/
-
     });
   }
 
