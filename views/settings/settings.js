@@ -2,7 +2,6 @@ const gmail = require('../../engine/api-content/gmail.js');
 const $ = require('jquery');
 const path = require('path');
 const ipcRenderer = require('electron').ipcRenderer;
-const ipcMain = require('electron').ipcMain;
 
 let activeAccounts = [];
 let currentAccount;
@@ -52,7 +51,7 @@ function printProfiles() {
           callback(printProfiles);
         else
           callback();
-          
+
       });
   }
 
@@ -60,10 +59,12 @@ function printProfiles() {
   function loadAuth(){
     $('#authLink').click(function(){
       ipcRenderer.send('asynchronous-message','show-auth-gmail');
-      getProfile(cleanPrint);
-    /*  ipcMain.on('asynchronous-reply', function(event, arg) {
-        console.log('reply'); // prints "pong"
-      });*/
+
+      ipcRenderer.on('asynchronous-reply', function(event, arg) {
+        console.log(arg);
+        if(arg === 'auth-complete')
+        getProfile(cleanPrint);
+      });
 
     });
   }
