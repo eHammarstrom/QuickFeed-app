@@ -1,24 +1,31 @@
-
-#generalSettings{
-
+#page-wrapper {
+    max-width: 100%;
+    padding: 5px;
+    height: 100%;
+    .col-lg-12 {
+        padding: 0 !important;
+        max-width: 100%;
+    }
+    .row {
+        margin: 0;
+    }
 }
-#gmailSettings{
-  height: auto;
-  width: 100%;
+#generalSettings {}
+#gmailSettings {
+    height: auto;
+    width: 100%;
 }
-.gmailSettingsClass{
-  margin-top: 5px;
-  margin-bottom: 5px;
+.gmailSettingsClass {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
-
-.gmailSettingsClass > h2{
-  margin-left: 3px;
-  font-size: 16px;
-  font-family: inherit;
-  font-weight: 500;
+.gmailSettingsClass > h2 {
+    margin-left: 3px;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 500;
 }
-
-#active{
-  font-size: 100%;
-  font-style: italic;
+#active {
+    font-size: 100%;
+    font-style: italic;
 }

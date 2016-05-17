@@ -8,6 +8,19 @@ const messageContentDelay = 250;
 
 let scrollPrint = true;
 
+function sendMail(to, subject, message) {
+    gmail.request.getProfile(function(profile) {
+        gmail.request.sendMailMessage(
+            profile.emailAddress,
+            to,
+            subject,
+            message,
+            function(response) {
+                //console.log(response);
+            });
+    });
+}
+
 function messageToHtml(message, delay) {
     let parsedHeaders =
         gmail.parse.getHeaders(message);
@@ -25,11 +38,9 @@ function messageToHtml(message, delay) {
 
 function printCache() {
     if (gmail.cache.length !== 0) {
-        console.log('Cache is not empty!');
         for (let i = 0; i < gmail.cache.length; i++) {
             messageToHtml(
-                gmail.cache[i],
-                messageSpawnDelay *
+                gmail.cache[i], messageSpawnDelay *
                 ((i + 1) * messageSpawnDelayPerMessage));
         }
         return true;
@@ -43,8 +54,7 @@ function printMessages() {
         let i = 1;
         for (let key in messages) {
             messageToHtml(
-                messages[key],
-                messageSpawnDelay *
+                messages[key], messageSpawnDelay *
                 (i++ * messageSpawnDelayPerMessage));
         }
         scrollPrint = true;
@@ -73,13 +83,15 @@ function printMessageContent(message_id) {
         // get the spawned iframe, fill the contents and expand the view of it
         let $iframe = $('#' + message.id + '_iframe');
         $iframe.ready(function() {
+            let head = $iframe.contents().find('head');
             let body = $iframe.contents().find('body');
 
+            head.append('<meta charset=\"UTF-8\">');
             body.append(content);
 
-            let bodyHeight = body.height();
+            //let bodyHeight = body.height();
 
-            console.log('HEIGHT ' + bodyHeight);
+            //console.log('HEIGHT ' + bodyHeight);
 
             /*
             if (bodyHeight < 500)
@@ -115,9 +127,33 @@ $(window).scroll(function() {
     }
 });
 
-$(document).on('click', '#sendMail', function(e) {
+$(document).on('click', '#sendEmail', function(e) {
     e.preventDefault();
-    // Here we will toggle an overlayed 'window' and prepare for mail to be sent
+
+    let error = false;
+    let recipient = $('#recipient-name')[0].value;
+    let subject = $('#subject-name')[0].value;
+    let message = $('#message-text')[0].value;
+
+    if (recipient.length == 0) {
+        $('#recipient-name').parent().addClass('has-error');
+        error = true;
+    }
+
+    if (subject.length == 0) {
+        $('#subject-name').parent().addClass('has-error');
+        error = true;
+    }
+
+    if (message.length == 0) {
+        $('#message-text').parent().addClass('has-error');
+        error = true;
+    }
+
+    if (error === false) {
+        sendMail(recipient, subject, message);
+        $('#emailModal').modal('hide');
+    }
 });
 
 $(document).on('click', '#mailTable>tbody>tr', function(e) {
