@@ -31,6 +31,13 @@ function printProfiles() {
     }
 }
 
+  function cleanPrint(callback){
+    $('#dropElement').empty();
+    $('#activeButton').empty();
+
+    callback();
+  }
+
   function getProfile(callback) {
       gmail.request.getProfile(function(profile) {
         let address = profile.emailAddress;
@@ -39,13 +46,25 @@ function printProfiles() {
           activeAccounts.unshift(address);
           currentAccount = address;
         }
-        callback();
+
+        if(callback.name == 'cleanPrint')
+          callback(printProfiles);
+        else
+          callback();
+
       });
   }
 
+/*Loads the authentication window and executes cleanPrint*/
   function loadAuth(){
     $('#authLink').click(function(){
       ipcRenderer.send('asynchronous-message','show-auth-gmail');
+
+      ipcRenderer.on('asynchronous-reply', function(event, arg) {
+        console.log(arg);
+        if(arg === 'auth-complete')
+        getProfile(cleanPrint);
+      });
     });
   }
 

@@ -22,6 +22,7 @@ app.on('ready', function() {
     ipcMain.on('asynchronous-message', function(event, arg) {
         if (arg === 'show-auth-gmail') {
             gmailAuthWindow.startAuthorization();
+						event.sender.send('asynchronous-reply', 'auth-complete');
         }
     });
 
