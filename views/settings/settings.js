@@ -65,7 +65,6 @@ function printProfiles() {
         if(arg === 'auth-complete')
         getProfile(cleanPrint);
       });
-
     });
   }
 
