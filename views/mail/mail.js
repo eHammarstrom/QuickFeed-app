@@ -77,7 +77,7 @@ function printMessageContent(message_id) {
 
         // scroll to focus of content
         $('html,body').animate({
-            scrollTop: $('#' + message.id).offset().top - 100
+            scrollTop: $('#' + message.id).offset().top - 50
         }, 'slow');
 
         // get the spawned iframe, fill the contents and expand the view of it
@@ -100,7 +100,9 @@ function printMessageContent(message_id) {
                 $iframe.height(500 + 'px');
             */
 
-            $iframe.height(500 + 'px');
+            let contentDivHeight = $('#content').height() - 50;
+
+            $iframe.height(contentDivHeight + 'px');
         });
     });
 }
