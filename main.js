@@ -17,7 +17,7 @@ let menu = Menu.buildFromTemplate([
 	}
 ]);
 
-Menu.setApplicationMenu(menu);
+//Menu.setApplicationMenu(menu);
 
 /* mail pre-fetching */
 const gmail = require('./engine/api-content/gmail.js');
