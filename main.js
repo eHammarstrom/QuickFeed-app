@@ -27,20 +27,28 @@ gmail.request.getMailMessageList();
 /* html interaction code */
 const $ = require('jquery');
 
+// to be loaded first time
+contentLoadHtml('/views/welcome/welcome.html', addNavSelected('#logo'));
+
 $('#mail').click(function(e) {
 	e.preventDefault();
-	contentLoadHtml('/views/mail/mail.html', addNavSelected('#mail'));
+	contentLoadHtml('/views/mail/mail.html', addNavSelected(this));
 });
 
 $('#messages').click(function(e) {
 	e.preventDefault();
-	contentLoadHtml('/views/messages/messages.html', addNavSelected('#messages'));
+	contentLoadHtml('/views/messages/messages.html', addNavSelected(this));
 });
 
 $('#settings').click(function(e) {
 	e.preventDefault();
-	contentLoadHtml('/views/settings/settings.html', addNavSelected('#settings'));
+	contentLoadHtml('/views/settings/settings.html', addNavSelected(this));
 });
+
+$('#logo').click(function(e) {
+	e.preventDefault();
+	contentLoadHtml('/views/welcome/welcome.html', addNavSelected(this));
+})
 
 /**
 * Remove existing .selected class and add to specified element

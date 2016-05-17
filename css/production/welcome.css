@@ -1,0 +1,16 @@
+#content {
+  background-color: white; }
+  #content #supportedApps {
+    display: inline-block;
+    text-align: center;
+    height: 50%;
+    width: 100%;
+    margin: 100px auto; }
+    #content #supportedApps .fa {
+      font-size: 16em;
+      color: black;
+      margin: 5px;
+      border-radius: 5px;
+      color: #777; }
+    #content #supportedApps .supported {
+      color: #A8CD1B; }

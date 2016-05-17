@@ -83,8 +83,10 @@ function printMessageContent(message_id) {
         // get the spawned iframe, fill the contents and expand the view of it
         let $iframe = $('#' + message.id + '_iframe');
         $iframe.ready(function() {
+            let head = $iframe.contents().find('head');
             let body = $iframe.contents().find('body');
 
+            head.append('<meta charset=\"UTF-8\">');
             body.append(content);
 
             //let bodyHeight = body.height();
