@@ -24,7 +24,7 @@ function parseMultipartBody(parts) {
                         .replace(/_/g, '/')
                         .replace(/\s/g, ''))));
         } else {
-            res += 'MIME: ' + parts[i].mimeType;
+            //res += 'MIME: ' + parts[i].mimeType;
         }
     }
     return res;
