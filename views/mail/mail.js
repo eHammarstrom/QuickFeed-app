@@ -137,7 +137,10 @@ $(document).on('click', '#sendEmail', function(e) {
     let subject = $('#subject-name')[0].value;
     let message = $('#message-text')[0].value;
 
-    if (recipient.length == 0) {
+    // thanks to www.emailregex.com for saving lives
+    if (recipient.length == 0 ||
+        !recipient.match(/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i
+)) {
         $('#recipient-name').parent().addClass('has-error');
         error = true;
     }
@@ -155,6 +158,10 @@ $(document).on('click', '#sendEmail', function(e) {
     if (error === false) {
         sendMail(recipient, subject, message);
         $('#emailModal').modal('hide');
+        $('.form-group').removeClass('has-error');
+        $('#recipient-name').val('');
+        $('#subject-name').val('');
+        $('#message-text').val('');
     }
 });
 
