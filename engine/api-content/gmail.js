@@ -23,9 +23,17 @@ function parseMultipartBody(parts) {
                         .replace(/-/g, '+')
                         .replace(/_/g, '/')
                         .replace(/\s/g, ''))));
-        } else if (parts[i].mimeType === 'multipart/alternative') {
-            console.log(parts[i]);
-            res += parseMultipartBody(parts[i]);
+        } else if (parts[i].mimeType === 'text/plain') {
+            /*
+            res += decodeURIComponent(
+                escape(
+                    atob(parts[i].body.data
+                        .replace(/-/g, '+')
+                        .replace(/_/g, '/')
+                        .replace(/\s/g, ''))));
+            */
+        } else {
+            res += 'mime: ' + parts[i].mimeType + ' not yet supported\n';
         }
     }
     return res;
@@ -62,15 +70,15 @@ let parse = {
                             .replace(/\s/g, '')))));
             } else if (mime === 'multipart/alternative') {
                 resolve(parseMultipartBody(message.payload.parts));
-            } else if (mime === 'multipart/mixed') {
+            /* } else if (mime === 'multipart/mixed') {
                 let total = '';
                 for (part in message.payload.parts) {
                     console.log(message.payload.parts[part]);
                     total += parseMultipartBody(message.payload.parts[part]);
                 }
-                resolve(total);
+                resolve(total); */
             } else {
-                resolve('Mime was: ' + mime + ' and cannot currently be handled.');
+                resolve('Mime was: ' + mime + ' and is currently not supported.');
             }
 
         });
