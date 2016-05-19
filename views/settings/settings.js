@@ -5,6 +5,7 @@ const ipcRenderer = require('electron').ipcRenderer;
 
 let activeAccounts = [];
 let currentAccount;
+let printing = false;  //Boolean for preventing fast click-bug
 
 /**Loads the current profile and other active accounts
     to dropdown menu*/
@@ -29,12 +30,14 @@ function printProfiles() {
         '<li id="user' + i + '"><a class="dropdown-item" href="#">' + account + '</a></li>'
       );
     }
+
+    printing = false;
 }
 
   function cleanPrint(callback){
     $('#dropElement').empty();
     $('#activeButton').empty();
-
+    console.log('cleaned');
     callback();
   }
 
@@ -71,7 +74,10 @@ function printProfiles() {
 /** Document specific JQUERY **/
   $(document).ajaxComplete(function(e, xhr, settings) {
     if (settings.url === path.normalize(__dirname + '/settings.html')) {
-          loadAuth();
-          getProfile(printProfiles);
+          if(!printing){
+            printing = true;
+            loadAuth();
+            getProfile(printProfiles);
+          }
         }
   });
