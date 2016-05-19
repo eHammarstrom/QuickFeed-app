@@ -23,8 +23,17 @@ function parseMultipartBody(parts) {
                         .replace(/-/g, '+')
                         .replace(/_/g, '/')
                         .replace(/\s/g, ''))));
+        } else if (parts[i].mimeType === 'text/plain') {
+            /*
+            res += decodeURIComponent(
+                escape(
+                    atob(parts[i].body.data
+                        .replace(/-/g, '+')
+                        .replace(/_/g, '/')
+                        .replace(/\s/g, ''))));
+            */
         } else {
-            res += 'MIME: ' + parts[i].mimeType;
+            res += 'mime: ' + parts[i].mimeType + ' not yet supported\n';
         }
     }
     return res;
@@ -47,24 +56,33 @@ let parse = {
         return parseData;
     },
 
-    getBody: function(message) {
-        let mime = message.payload.mimeType;
-        let data = message.payload.body.data;
+    getBody: function(message, callback) {
+        return new Promise(function(resolve, reject) {
+            let mime = message.payload.mimeType;
+            let data = message.payload.body.data;
 
-        if (mime === 'text/html' || mime === 'text/plain') {
-            return decodeURIComponent(
-                escape(
-                    atob(data
-                        .replace(/-/g, '+')
-                        .replace(/_/g, '/')
-                        .replace(/\s/g, ''))));
-        } else if (mime === 'multipart/alternative') {
-            return parseMultipartBody(message.payload.parts);
-        } else {
-            return 'Mime was: ' + mime + ' and cannot currently be handled.';
-        }
+            if (mime === 'text/html' || mime === 'text/plain') {
+                resolve(decodeURIComponent(
+                    escape(
+                        atob(data
+                            .replace(/-/g, '+')
+                            .replace(/_/g, '/')
+                            .replace(/\s/g, '')))));
+            } else if (mime === 'multipart/alternative') {
+                resolve(parseMultipartBody(message.payload.parts));
+            /* } else if (mime === 'multipart/mixed') {
+                let total = '';
+                for (part in message.payload.parts) {
+                    console.log(message.payload.parts[part]);
+                    total += parseMultipartBody(message.payload.parts[part]);
+                }
+                resolve(total); */
+            } else {
+                resolve('Mime was: ' + mime + ' and is currently not supported.');
+            }
+
+        });
     }
-
 };
 
 let request = {
@@ -109,10 +127,10 @@ let request = {
     },
 
     getMailCachedContent: function(message_id, finalCallback) {
-        async.each(cache, function(message, callback) {
-            if (message.id === message_id) {
-                finalCallback(message);
-                callback(message);
+        async.each(cache, function(msg, callback) {
+            if (msg.message.id === message_id) {
+                finalCallback(msg);
+                callback(msg);
             } else {
                 callback();
             }
@@ -179,35 +197,41 @@ function getMailMessageListIds(callback) {
 
 function getMailMessageListPayloads(finalCallback) {
     //let startTime = new Date().getTime();
-    getMailMessageListIds(function(messages) {
-        let acquiredMessages = {};
-        let authClient = googleAuth.getAuthorizedOAuth2Client();
-        async.forEachOf(messages, function(value, key, callback) {
-            authClient.then(function(client) {
-                let singleStartTime = new Date().getTime();
-                gmail.users.messages.get({
-                    auth: client,
-                    userId: 'me',
-                    id: value.id,
-                    format: 'full'
-                }, function(err, response) {
-                    acquiredMessages[key] = response;
-                    cache.push(response);
-                    //console.log(
-                    //'gmail.js > getMailMessageListPayloads > mail #' +
-                    //key + ': '+
-                    //(new Date().getTime() - singleStartTime) + 'ms');
-                    callback();
+    request.getProfile(function(usrProfile) {
+        getMailMessageListIds(function(messages) {
+            //let acquiredMessages = {};
+            let authClient = googleAuth.getAuthorizedOAuth2Client();
+            async.forEachOf(messages, function(value, key, callback) {
+                authClient.then(function(client) {
+                    let singleStartTime = new Date().getTime();
+                    gmail.users.messages.get({
+                        auth: client,
+                        userId: 'me',
+                        id: value.id,
+                        format: 'full'
+                    }, function(err, response) {
+                        //acquiredMessages[key] = response;
+                        let message = {
+                            message: response,
+                            profile: usrProfile
+                        };
+                        cache.push(message);
+                        //console.log(
+                        //'gmail.js > getMailMessageListPayloads > mail #' +
+                        //key + ': '+
+                        //(new Date().getTime() - singleStartTime) + 'ms');
+                        callback();
+                    });
+                }).catch(function(err) {
+                    console.error(err);
                 });
-            }).catch(function(err) {
-                console.error(err);
+            }, function(err) {
+                if (err) console.error(err.message);
+                //console.log(
+                //'gmail.js > getMailMessageListPayloads: ' +
+                //(new Date().getTime() - startTime) + 'ms');
+                finalCallback(cache);
             });
-        }, function(err) {
-            if (err) console.error(err.message);
-            //console.log(
-            //'gmail.js > getMailMessageListPayloads: ' +
-            //(new Date().getTime() - startTime) + 'ms');
-            finalCallback(acquiredMessages);
         });
     });
 }
