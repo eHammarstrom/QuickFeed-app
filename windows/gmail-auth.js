@@ -2,7 +2,7 @@
 const googleAuth = require('../engine/api-auth/google.js');
 const BrowserWindow = require('electron').BrowserWindow;
 
-exports.startAuthorization = function() {
+exports.startAuthorization = function(event) {
     let authWindow = new BrowserWindow({
         'useContentSize': true,
         center: true,
@@ -22,6 +22,7 @@ exports.startAuthorization = function() {
             googleAuth.requestToken(code).then(function(token) {
                 console.log(token);
                 googleAuth.writeToken(token);
+                event.sender.send('asynchronous-reply', 'auth-complete');  //Send reply to setting.js
             }).catch(function(data) {
                 console.log(data);
             });
