@@ -1,6 +1,6 @@
 {
-  "name": "project-lama-rrisky",
-  "version": "0.0.1",
+  "name": "QuickFeed",
+  "version": "0.1.0",
   "main": "app.js",
   "scripts": {
     "start": "electron .",
