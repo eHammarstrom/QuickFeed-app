@@ -17,7 +17,7 @@ app.on('ready', function() {
 
 	mainWindow.setMenu(null); // we design and set menu in main.js instead
 	mainWindow.loadURL('file://' + __dirname + '/main.html');
-	mainWindow.openDevTools(); // remove line from production
+	//mainWindow.openDevTools(); // remove line from production
 
     ipcMain.on('asynchronous-message', function(event, arg) {
         if (arg === 'show-auth-gmail') {
